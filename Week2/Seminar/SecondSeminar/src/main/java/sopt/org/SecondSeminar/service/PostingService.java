@@ -22,7 +22,7 @@ public class PostingService {
         newPosting.setId((long) postingList.size()); //1
 
         System.out.println(newPosting.getId());
-        // 저장한 유저 아이디 값 반환
+        // 저장한 게시물 아이디 값 반환
         return newPosting.getId();
     }
 }
