@@ -16,11 +16,15 @@ public enum Error {
 
     TOKEN_TIME_EXPIRED_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰 시간이 만료되었습니다"),
     INVALID_PASSWORD_EXCEPTION(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다"),
+    INVALID_MULTIPART_EXTENSION_EXCEPTION(HttpStatus.BAD_REQUEST, "확장자가 올바르지 않습니다"),
 
     /**
      * 404 NOT FOUND
      */
     NOT_FOUND_USER_EXCEPTION(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다"),
+    NOT_FOUND_SAVE_IMAGE_EXCEPTION(HttpStatus.NOT_FOUND, "저장되지 않은 이미지입니다"),
+    NOT_FOUND_IMAGE_EXCEPTION(HttpStatus.NOT_FOUND, "존재하지 않는 이미지입니다"),
+
 
     /**
      * 409 CONFLICT
