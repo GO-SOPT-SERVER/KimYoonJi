@@ -8,6 +8,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import sopt.org.fourthSeminar.config.jwt.JwtService;
+import sopt.org.fourthSeminar.controller.dto.TokenDto;
+import sopt.org.fourthSeminar.exception.model.ExpiredAccessTokenException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -26,14 +28,22 @@ public class UserIdResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer modelAndViewContainer, @NotNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         final HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        final String token = request.getHeader("Authorization").split(" ")[1];
-        // 토큰 검증
-        if (!jwtService.verifyToken(token)) {
-            throw new RuntimeException(String.format("USER_ID를 가져오지 못했습니다. (%s - %s)", parameter.getClass(), parameter.getMethod()));
+        String accessToken = request.getHeader("Authorization").split(" ")[1];
+        String refreshToken = request.getHeader("Refresh").split(" ")[2];
+
+        try {
+            // 토큰 검증
+            if (!jwtService.verifyToken(accessToken) || !jwtService.verifyRefreshToken(refreshToken)) {
+                throw new RuntimeException(String.format("USER_ID를 가져오지 못했습니다. (%s - %s)", parameter.getClass(), parameter.getMethod()));
+            }
+        } catch (ExpiredAccessTokenException e) {
+            TokenDto tokenDto = jwtService.regenerateToken(refreshToken);
+            accessToken = tokenDto.getAccessToken();
+            refreshToken = tokenDto.getRefreshToken();
         }
 
         // 유저 아이디 반환
-        final String tokenContents = jwtService.getJwtContents(token);
+        final String tokenContents = jwtService.getJwtContents(accessToken);
         try {
             return Long.parseLong(tokenContents);
         } catch (NumberFormatException e) {

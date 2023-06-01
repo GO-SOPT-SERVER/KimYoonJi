@@ -1,12 +1,15 @@
 package sopt.org.fourthSeminar.controller;
 
+import antlr.Token;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import sopt.org.fourthSeminar.common.dto.ApiResponse;
 import sopt.org.fourthSeminar.config.jwt.JwtService;
+import sopt.org.fourthSeminar.controller.dto.TokenDto;
 import sopt.org.fourthSeminar.controller.dto.request.UserLoginRequestDto;
 import sopt.org.fourthSeminar.controller.dto.request.UserRequestDto;
 import sopt.org.fourthSeminar.controller.dto.response.UserLoginResponseDto;
@@ -37,7 +40,7 @@ public class UserController {
     @Operation(summary = "유저 로그인 API", description = "유저가 서버에 로그인을 요청합니다.")
     public ApiResponse<UserLoginResponseDto> login(@RequestBody @Valid final UserLoginRequestDto request) {
         final Long userId = userService.login(request);
-        final String token = jwtService.issuedToken(String.valueOf(userId));
-        return ApiResponse.success(Success.LOGIN_SUCCESS, UserLoginResponseDto.of(userId, token));
+        final TokenDto refreshToken = jwtService.signIn(String.valueOf(userId));
+        return ApiResponse.success(Success.LOGIN_SUCCESS, UserLoginResponseDto.of(userId, refreshToken.getAccessToken(), refreshToken.getRefreshToken()));
     }
 }

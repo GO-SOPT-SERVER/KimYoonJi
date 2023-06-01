@@ -17,6 +17,8 @@ public enum Error {
     TOKEN_TIME_EXPIRED_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰 시간이 만료되었습니다"),
     INVALID_PASSWORD_EXCEPTION(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다"),
     INVALID_MULTIPART_EXTENSION_EXCEPTION(HttpStatus.BAD_REQUEST, "확장자가 올바르지 않습니다"),
+    INVALID_CREDENTIALS_EXCEPTION(HttpStatus.UNPROCESSABLE_ENTITY, "제공된 리프레쉬 토큰이 올바르지 않습니다"),
+    REFRESH_TOKEN_MISS_MATCH_EXCEPTION(HttpStatus.BAD_REQUEST, "리프레쉬 토큰이 일치하지 않습니다"),
 
     /**
      * 404 NOT FOUND
